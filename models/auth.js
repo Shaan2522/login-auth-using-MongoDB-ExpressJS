@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const User = require('./User'); // Mongoose schema
+const User = require('./user'); // Mongoose schema
 const saltRounds = 10;
 
 async function signup(username, password) {

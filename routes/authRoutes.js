@@ -17,17 +17,16 @@ router.post('/signup', async (req, res) => {
   const { username, password, verifyPassword } = req.body;
 
   if (password !== verifyPassword) {
-    return res.send("Passwords do not match. Please try again.");
+    return res.json({ success: false, message: "Passwords do not match" });
   }
 
   try {
     await signup(username, password);
-    res.redirect('/login');
+    return res.json({ success: true, message: "User created successfully!" });
   } catch (err) {
-    res.send(err.message);
+    return res.json({ success: false, message: err.message });
   }
 });
-
 
 // Render login page
 router.get('/login', (req, res) => {
@@ -40,9 +39,9 @@ router.post('/login', async (req, res) => {
   try {
     const user = await login(req.body.username, req.body.password);
     req.session.username = user.username;
-    res.redirect('/home');
+    res.json({ success: true, message: 'Login successful' });
   } catch (err) {
-    res.send(err.message);
+    res.json({ success: false, message: err.message });
   }
 });
 

@@ -8,7 +8,7 @@
 <body>
   <div class="form-container">
     <h2>Signup</h2>
-    <form id="signupForm" action="/signup" method="post">
+    <form id="signupForm">
       <div class="form-group">
         <label for="name">Username:</label>
         <input type="text" id="name" name="username" placeholder="Choose a username" required autocomplete="off">
@@ -26,14 +26,41 @@
     <p style="text-align:center;">Already have an account? <a href="/login">Login</a></p>
   </div>
 
+  <!-- Popup -->
+  <div id="popup" class="popup"></div>
+
   <script>
-    document.getElementById('signupForm').addEventListener('submit', function (e) {
+    const popup = document.getElementById('popup');
+
+    function showPopup(message, type = 'success') {
+      popup.textContent = message;
+      popup.className = `popup show ${type}`;
+      setTimeout(() => {
+        popup.classList.remove('show');
+      }, 3000);
+    }
+
+    document.getElementById('signupForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById('name').value;
       const password = document.getElementById('password').value;
       const verifyPassword = document.getElementById('verifyPassword').value;
 
-      if (password !== verifyPassword) {
-        e.preventDefault();
-        alert('Passwords do not match.');
+      const response = await fetch('/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, verifyPassword })
+      });
+
+      const result = await response.json();
+
+      showPopup(result.message, result.success ? 'success' : 'error');
+
+      if (result.success) {
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1000);
       }
     });
   </script>

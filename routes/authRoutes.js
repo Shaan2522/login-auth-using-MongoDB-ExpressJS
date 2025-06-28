@@ -16,6 +16,12 @@ router.get('/signup', (req, res) => {
 router.post('/signup', async (req, res) => {
   const { email, password, verifyPassword } = req.body;
 
+  // Email validation (simple regex)
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.json({ success: false, message: "Please enter a valid email address." });
+  }
+
   if (password !== verifyPassword) {
     return res.json({ success: false, message: "Passwords do not match" });
   }

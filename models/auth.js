@@ -2,7 +2,16 @@ const bcrypt = require('bcrypt');
 const User = require('./user'); // Mongoose schema
 const saltRounds = 10;
 
+function isValidEmail(email) {
+  // Simple email regex
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
 async function signup(email, password) {
+  if (!isValidEmail(email)) {
+    throw new Error('Invalid email address');
+  }
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new Error('User already exists');

@@ -14,14 +14,14 @@ router.get('/signup', (req, res) => {
 
 // Handle signup
 router.post('/signup', async (req, res) => {
-  const { username, password, verifyPassword } = req.body;
+  const { email, password, verifyPassword } = req.body;
 
   if (password !== verifyPassword) {
     return res.json({ success: false, message: "Passwords do not match" });
   }
 
   try {
-    await signup(username, password);
+    await signup(email, password);
     return res.json({ success: true, message: "User created successfully!" });
   } catch (err) {
     return res.json({ success: false, message: err.message });
@@ -30,15 +30,15 @@ router.post('/signup', async (req, res) => {
 
 // Render login page
 router.get('/login', (req, res) => {
-  if (req.session.username) return res.redirect('/home');
+  if (req.session.email) return res.redirect('/home');
   res.render('login');
 });
 
 // Handle login
 router.post('/login', async (req, res) => {
   try {
-    const user = await login(req.body.username, req.body.password);
-    req.session.username = user.username;
+    const user = await login(req.body.email, req.body.password);
+    req.session.email = user.email;
     res.json({ success: true, message: 'Login successful' });
   } catch (err) {
     res.json({ success: false, message: err.message });
@@ -47,8 +47,8 @@ router.post('/login', async (req, res) => {
 
 // Home page
 router.get('/home', (req, res) => {
-  if (!req.session.username) return res.redirect('/login');
-  res.render('home', { username: req.session.username });
+  if (!req.session.email) return res.redirect('/login');
+  res.render('home', { email: req.session.email });
 });
 
 // Logout
@@ -58,7 +58,7 @@ router.get('/logout', (req, res) => {
 
 // Editor redirect
 router.get('/editor', (req, res) => {
-  res.render('editor', { username: req.session.username });
+  res.render('editor', { email: req.session.email });
 });
 
 module.exports = router;

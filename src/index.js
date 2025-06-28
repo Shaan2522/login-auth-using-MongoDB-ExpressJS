@@ -1,68 +1,37 @@
-const express =  require('express');
+const express = require('express');
 const path = require('path');
-const bcrypt = require('bcrypt');
-const collection = require("./config")
+const mongoose = require('mongoose');
+const session = require('express-session');
+const authRoutes = require('../routes/authRoutes');
 
 const app = express();
 
-// convert data into json format
+// Middleware
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// EJS setup
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '..', 'views'));
 
-app.get('/', (req, res) => {
-    res.render('login');
+// Session setup
+app.use(session({
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: false
+}));
+
+// MongoDB connection
+mongoose.connect('mongodb://localhost:27017/admin')
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
+
+// Routes
+app.use('/', authRoutes);
+
+// Start server
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
-
-app.get('/signup', (req, res) => {
-    res.render('signup');
-});
-
-app.post("/signup", async (req, res) => {
-    const data = {
-        name: req.body.username,
-        password: req.body.password
-    }
-
-    // check if user already exists in the database
-    const existingUser = await collection.findOne({name: data.name});
-    if(existingUser) {
-        res.send("User already exists. Please choose a different username.");
-    } else {
-        // password hashing using bcrypt
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(data.password, saltRounds);
-
-        data.password = hashedPassword;
-
-        const userdata = await collection.insertMany(data);
-        console.log(userdata);
-    }
-});
-
-// login user
-app.post("/login", async (req, res) => {
-    try {
-        const check = await collection.findOne({name: req.body.username});
-        if(!check) {
-            res.send("username not found");
-        }
-        // compare the hash password from the database with the plaintext
-        const isPasswordMatch = await bcrypt.compare(req.body.password, check.password);
-        if(!isPasswordMatch) {
-            res.send("wrong Password");
-        }
-        else {
-            res.render("home");
-        }
-    } catch {
-        res.send("wrong details");
-    }
-});
-
-const port = 5000;
-app.listen(port, () => {
-    console.log(`Server is running on Port: ${port}`);
-    console.log(`http://localhost:${port}`);
-})

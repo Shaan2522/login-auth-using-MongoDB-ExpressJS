@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+  <meta charset="UTF-8">
+  <title>Welcome</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <h1>Home Page</h1>
+  <div class="welcome-container">
+    <h1>Welcome, <%= username %>!</h1>
+    <a href="/logout" class="logout-link">Logout</a>
+  </div>
 </body>
 </html>

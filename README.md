@@ -57,11 +57,11 @@ A modern authentication web app built with Node.js, Express.js, and MongoDB. Sup
 
 Login Page: 
 
-public\images\loginPage.png
+![Screenshot](./public/images/loginPage.png)
 
 Signup Page:
 
-public\images\signupPage.png
+![Screenshot](./public/images/signupPage.png)
 
 ---
 

@@ -3,6 +3,7 @@ const router = express.Router();
 const { signup, login } = require('../models/auth');
 const passport = require('passport');
 const rateLimit = require('express-rate-limit');
+const svgCaptcha = require('svg-captcha');
 
 // Rate limiter for login
 const loginLimiter = rateLimit({
@@ -16,6 +17,14 @@ router.get('/', (req, res) => {
   res.redirect('/login');
 });
 
+// CAPTCHA endpoint (shared for login/signup)
+router.get('/captcha', (req, res) => {
+  const captcha = svgCaptcha.create({ noise: 2, color: true, background: '#f4f6f8' });
+  req.session.captcha = captcha.text;
+  res.type('svg');
+  res.status(200).send(captcha.data);
+});
+
 // Render signup page
 router.get('/signup', (req, res) => {
   res.render('signup');
@@ -23,7 +32,14 @@ router.get('/signup', (req, res) => {
 
 // Handle signup
 router.post('/signup', async (req, res) => {
-  const { email, password, verifyPassword } = req.body;
+  const { email, password, verifyPassword, captcha } = req.body;
+
+  // CAPTCHA validation
+  if (!captcha || !req.session.captcha || captcha.toLowerCase() !== req.session.captcha.toLowerCase()) {
+    req.session.captcha = null;
+    return res.json({ success: false, message: 'CAPTCHA does not match' });
+  }
+  req.session.captcha = null;
 
   // Email validation (simple regex)
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -51,8 +67,17 @@ router.get('/login', (req, res) => {
 
 // Handle login
 router.post('/login', loginLimiter, async (req, res) => {
+  const { email, password, captcha } = req.body;
+
+  // CAPTCHA validation
+  if (!captcha || !req.session.captcha || captcha.toLowerCase() !== req.session.captcha.toLowerCase()) {
+    req.session.captcha = null;
+    return res.json({ success: false, message: 'CAPTCHA does not match' });
+  }
+  req.session.captcha = null;
+
   try {
-    const user = await login(req.body.email, req.body.password);
+    const user = await login(email, password);
     req.session.email = user.email;
     res.json({ success: true, message: 'Login successful' });
   } catch (err) {

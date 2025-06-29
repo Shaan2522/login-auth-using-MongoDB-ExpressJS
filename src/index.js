@@ -7,6 +7,7 @@ const passport = require('passport');
 const setupPassportStrategies = require('./passportConfig');
 const User = require('../models/user');
 const authRoutes = require('../routes/authRoutes');
+const svgCaptcha = require('svg-captcha');
 
 const app = express();
 
@@ -48,6 +49,14 @@ passport.deserializeUser(async (id, done) => {
 mongoose.connect('mongodb://localhost:27017/admin')
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
+
+// Serve /captcha route from the main app, not just in the router
+app.get('/captcha', (req, res) => {
+  const captcha = svgCaptcha.create({ noise: 2, color: true, background: '#f4f6f8' });
+  req.session.captcha = captcha.text;
+  res.type('svg');
+  res.status(200).send(captcha.data);
+});
 
 // Routes
 app.use('/', authRoutes);

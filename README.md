@@ -43,12 +43,12 @@ A modern authentication web app built with Node.js, Express.js, and MongoDB. Sup
 
 - <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" width="24"/> **Node.js** & <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="Express.js" width="24"/> **Express.js**
 - <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB" width="24"/> **MongoDB** & <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongoose/mongoose-original.svg" alt="Mongoose" width="24"/> **Mongoose**
-- <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/passport/passport-original.svg" alt="Passport.js" width="24"/> **Passport.js** (local, Google, GitHub strategies)
+- <img src="https://github.com/patil-prajwal/Tech-Stack-Icons/blob/main/Icons/passport.svg" alt="Passport.js" width="24"/> **Passport.js** (local, Google, GitHub strategies)
 - <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/npm/npm-original-wordmark.svg" alt="npm" width="24"/> **bcrypt** (password hashing)
 - <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/npm/npm-original-wordmark.svg" alt="npm" width="24"/> **express-session** (session management)
 - <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/npm/npm-original-wordmark.svg" alt="npm" width="24"/> **svg-captcha** (CAPTCHA images)
 - <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/npm/npm-original-wordmark.svg" alt="npm" width="24"/> **express-rate-limit** (rate limiting)
-- <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ejs/ejs-original.svg" alt="EJS" width="24"/> **EJS** (templating)
+- <img src="https://ayushchugh.gallerycdn.vsassets.io/extensions/ayushchugh/ejs-snippets-and-color-highlighting/0.0.5/1625124300861/Microsoft.VisualStudio.Services.Icons.Default" alt="EJS" width="24"/> **EJS** (templating)
 - <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS" width="24"/> **CSS** (custom, modern UI)
 
 ---

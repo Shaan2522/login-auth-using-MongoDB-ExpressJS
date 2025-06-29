@@ -7,20 +7,25 @@ A modern authentication web app built with Node.js, Express.js, and MongoDB. Sup
 ## 📁 Folder Structure
 
 ```
-├── models/         # Mongoose schemas (User, Auth logic)
-├── public/         # Static assets (CSS, images)
-├── routes/         # Express route handlers (auth, OAuth, etc.)
-├── src/            # App entrypoint, Passport config
-├── views/          # EJS templates for all pages
-├── .env            # Environment variables (not committed)
-├── package.json    # Project metadata & dependencies
+├── models/                   # Mongoose schemas and auth logic
+│   ├── auth.js               # Signup/login logic with bcrypt
+│   └── user.js               # User schema (email, password, OAuth fields)
+├── public/                   # Static assets like CSS, images
+│   ├── style.css             # Custom styles for all pages
+│   └── images/               # Static images (screenshots)
+├── routes/                   # Express route handlers
+│   └── authRoutes.js         # Handles login, signup, logout, home, captcha, etc.
+├── src/                      # Application entry point and server logic
+│   ├── index.js              # Main Express server setup
+│   └── passportConfig.js     # Passport.js strategy setup for Google & GitHub
+├── views/                    # EJS templates for frontend rendering
+│   ├── home.ejs              # Dashboard/homepage after login
+│   ├── login.ejs             # Login form with OAuth & CAPTCHA
+│   └── signup.ejs            # Signup form with password validation & CAPTCHA
+├── .env                      # Environment variables (API keys, secrets, etc.)
+├── package.json              # Project metadata and dependencies
+└── package-lock.json         # Project installations
 ```
-
-- **models/**: User schema and authentication logic
-- **public/**: CSS styles and static files
-- **routes/**: All Express route definitions (login, signup, OAuth, etc.)
-- **src/**: Main app file (`index.js`), Passport strategies
-- **views/**: EJS templates for login, signup, home, etc.
 
 ---
 

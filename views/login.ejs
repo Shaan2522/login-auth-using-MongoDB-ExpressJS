@@ -19,6 +19,15 @@
         <input type="password" name="password" id="password" placeholder="Password" required>
         <div id="passwordError" class="error-message" style="display:none;"></div>
       </div>
+      <div class="form-group captcha-group">
+        <label for="captchaInput">Enter CAPTCHA</label>
+        <div class="captcha-row">
+          <img id="captchaImg" src="/captcha" alt="CAPTCHA" class="captcha-img">
+          <button type="button" id="refreshCaptcha" class="refresh-captcha-btn">↻</button>
+        </div>
+        <input type="text" id="captchaInput" name="captcha" placeholder="Enter CAPTCHA" required autocomplete="off">
+        <div id="captchaError" class="error-message" style="display:none;"></div>
+      </div>
       <button type="submit" class="submit-btn" id="loginBtn">Login</button>
     </form>
     <div class="oauth-buttons">
@@ -44,6 +53,10 @@
     const emailError = document.getElementById('emailError');
     const passwordError = document.getElementById('passwordError');
     const loginBtn = document.getElementById('loginBtn');
+    const captchaImg = document.getElementById('captchaImg');
+    const refreshCaptcha = document.getElementById('refreshCaptcha');
+    const captchaInput = document.getElementById('captchaInput');
+    const captchaError = document.getElementById('captchaError');
 
     function showPopup(message, type = 'success') {
       popup.textContent = message;
@@ -58,7 +71,18 @@
       return re.test(email);
     }
 
-    let touched = { email: false, password: false };
+    let touched = { email: false, password: false, captcha: false };
+
+    function reloadCaptcha() {
+      captchaImg.src = '/captcha?' + Date.now();
+      captchaInput.value = '';
+      captchaInput.classList.remove('input-invalid', 'input-valid');
+      captchaError.textContent = '';
+      captchaError.style.display = 'none';
+    }
+
+    refreshCaptcha.addEventListener('click', reloadCaptcha);
+    captchaImg.addEventListener('click', reloadCaptcha);
 
     function validateLoginForm() {
       let valid = true;
@@ -102,15 +126,37 @@
         passwordError.textContent = '';
         passwordError.style.display = 'none';
       }
+      // CAPTCHA validation
+      if (touched.captcha) {
+        if (!captchaInput.value) {
+          captchaInput.classList.add('input-invalid');
+          captchaInput.classList.remove('input-valid');
+          captchaError.textContent = 'Please enter the CAPTCHA.';
+          captchaError.style.display = 'block';
+          valid = false;
+        } else {
+          captchaInput.classList.remove('input-invalid');
+          captchaInput.classList.add('input-valid');
+          captchaError.textContent = '';
+          captchaError.style.display = 'none';
+        }
+      } else {
+        captchaInput.classList.remove('input-invalid');
+        captchaInput.classList.remove('input-valid');
+        captchaError.textContent = '';
+        captchaError.style.display = 'none';
+      }
       loginBtn.disabled = !valid;
       return valid;
     }
 
     emailInput.addEventListener('input', () => { touched.email = true; validateLoginForm(); });
     passwordInput.addEventListener('input', () => { touched.password = true; validateLoginForm(); });
+    captchaInput.addEventListener('input', () => { touched.captcha = true; validateLoginForm(); });
 
     // Show popup if ?error=oauth is in the URL
     window.addEventListener('DOMContentLoaded', () => {
+      reloadCaptcha();
       validateLoginForm();
       const params = new URLSearchParams(window.location.search);
       if (params.get('error') === 'oauth') {
@@ -124,20 +170,21 @@
         return;
       }
       e.preventDefault();
-
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-
+      const captcha = document.getElementById('captchaInput').value;
       const response = await fetch('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password, captcha })
       });
-
       const result = await response.json();
-
       showPopup(result.message, result.success ? 'success' : 'error');
-
+      if (!result.success && result.message === 'CAPTCHA does not match') {
+        reloadCaptcha();
+        captchaInput.value = '';
+        touched.captcha = false;
+      }
       if (result.success) {
         setTimeout(() => {
           window.location.href = '/home';

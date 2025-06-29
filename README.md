@@ -1,6 +1,6 @@
 # Node.js + Express.js Authentication Web App
 
-A modern authentication web app built with Node.js, Express.js, and MongoDB. Supports email/password login, Google & GitHub OAuth, password strength meter, CAPTCHA, and more—all with clean EJS views and professional UI.
+A modern authentication web app built with Node.js, Express.js, and MongoDB. Supports email/password login, Google & GitHub OAuth, password strength meter, CAPTCHA, and more.
 
 ---
 

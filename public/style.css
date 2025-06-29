@@ -228,3 +228,11 @@ a:hover {
 .refresh-captcha-btn:hover {
   background: #e0e0e0;
 }
+
+input[type="text"] {
+    width: 30%;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}

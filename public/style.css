@@ -195,3 +195,36 @@ a:hover {
   margin-top: 4px;
   margin-bottom: 0;
 }
+
+/* CAPTCHA Styles */
+.captcha-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.captcha-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.captcha-img {
+  height: 40px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+}
+.refresh-captcha-btn {
+  background: #f4f6f8;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 12px;
+  transition: background 0.2s;
+}
+.refresh-captcha-btn:hover {
+  background: #e0e0e0;
+}

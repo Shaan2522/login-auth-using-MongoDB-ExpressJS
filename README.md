@@ -62,6 +62,7 @@ public\images\loginPage.png
 Signup Page:
 
 public\images\signupPage.png
+
 ---
 
 ## 📝 License

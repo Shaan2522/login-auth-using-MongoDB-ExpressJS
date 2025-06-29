@@ -55,8 +55,13 @@ A modern authentication web app built with Node.js, Express.js, and MongoDB. Sup
 
 ## 📸 Screenshots
 
-<!-- Add screenshots here -->
+Login Page: 
 
+public\images\loginPage.png
+
+Signup Page:
+
+public\images\signupPage.png
 ---
 
 ## 📝 License

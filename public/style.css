@@ -39,9 +39,9 @@ label {
   color: #333;
 }
 
-input[type="text"],
+input[type="email"],
 input[type="password"] {
-  width: 100%;
+  width: 92%;
   padding: 10px 14px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -133,4 +133,65 @@ a:hover {
 
 .popup.error {
   background-color: #dc3545;
+}
+
+/* OAuth Buttons */
+.oauth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0 10px 0;
+}
+
+.oauth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  color: #fff;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.oauth-logo {
+  width: 22px;
+  height: 22px;
+  margin-right: 10px;
+  background: #fff;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.google-btn {
+  background: #db4437;
+}
+
+.google-btn:hover {
+  background: #b33125;
+}
+
+.github-btn {
+  background: #24292e;
+}
+
+.github-btn:hover {
+  background: #000;
+}
+
+.input-valid {
+  border: 2px solid #28a745 !important;
+}
+.input-invalid {
+  border: 2px solid #dc3545 !important;
+}
+.error-message {
+  color: #dc3545;
+  font-size: 0.85em;
+  margin-top: 4px;
+  margin-bottom: 0;
 }

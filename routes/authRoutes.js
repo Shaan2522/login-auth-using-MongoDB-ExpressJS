@@ -1,6 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { signup, login } = require('../models/auth');
+const passport = require('passport');
+const rateLimit = require('express-rate-limit');
+
+// Rate limiter for login
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  message: { success: false, message: 'Too many login attempts. Please try again later.' }
+});
 
 // redirect root / to /login
 router.get('/', (req, res) => {
@@ -41,7 +50,7 @@ router.get('/login', (req, res) => {
 });
 
 // Handle login
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   try {
     const user = await login(req.body.email, req.body.password);
     req.session.email = user.email;
@@ -49,6 +58,34 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     res.json({ success: false, message: err.message });
   }
+});
+
+// Google OAuth login
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/auth/google/callback', (req, res, next) => {
+  passport.authenticate('google', (err, user) => {
+    if (err || !user) return res.redirect('/login');
+    req.logIn(user, (err) => {
+      if (err) return res.redirect('/login');
+      req.session.email = user.email;
+      return res.redirect('/home');
+    });
+  })(req, res, next);
+});
+
+// GitHub OAuth login
+router.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
+
+router.get('/auth/github/callback', (req, res, next) => {
+  passport.authenticate('github', (err, user) => {
+    if (err || !user) return res.redirect('/login');
+    req.logIn(user, (err) => {
+      if (err) return res.redirect('/login');
+      req.session.email = user.email;
+      return res.redirect('/home');
+    });
+  })(req, res, next);
 });
 
 // Home page

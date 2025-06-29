@@ -10,18 +10,23 @@
     <h2>Signup</h2>
     <form id="signupForm">
       <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" placeholder="Enter your email" required autocomplete="off">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Email" required autocomplete="off">
+        <div id="emailError" class="error-message" style="display:none;"></div>
       </div>
       <div class="form-group">
-        <label for="password">Create Password:</label>
+        <label for="password">Create Password</label>
         <input type="password" name="password" id="password" placeholder="Create a password" required>
+        <div id="passwordStrength" class="error-message" style="display:none;"></div>
+        <div id="passwordError" class="error-message" style="display:none;"></div>
       </div>
       <div class="form-group">
-        <label for="verifyPassword">Verify Password:</label>
+        <label for="verifyPassword">Verify Password</label>
         <input type="password" name="verifyPassword" id="verifyPassword" placeholder="Re-enter your password" required>
+        <div id="verifyPasswordError" class="error-message" style="display:none;"></div>
       </div>
-      <button type="submit" class="submit-btn">Signup</button>
+      <br>
+      <button type="submit" class="submit-btn" id="signupBtn">Signup</button>
     </form>
     <p style="text-align:center;">Already have an account? <a href="/login">Login</a></p>
   </div>
@@ -31,6 +36,14 @@
 
   <script>
     const popup = document.getElementById('popup');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const verifyPasswordInput = document.getElementById('verifyPassword');
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const verifyPasswordError = document.getElementById('verifyPasswordError');
+    const passwordStrength = document.getElementById('passwordStrength');
+    const signupBtn = document.getElementById('signupBtn');
 
     function showPopup(message, type = 'success') {
       popup.textContent = message;
@@ -41,22 +54,127 @@
     }
 
     function validateEmail(email) {
-      // Simple email regex
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return re.test(email);
     }
 
+    function getPasswordStrength(password) {
+      if (password.length < 6) return 'weak';
+      if (/^(?=.*[0-9])(?=.{6,})/.test(password) && password.length < 8) return 'medium';
+      if (/^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/.test(password)) return 'strong';
+      return 'weak';
+    }
+
+    let touched = { email: false, password: false, verifyPassword: false };
+
+    function validateSignupForm() {
+      let valid = true;
+      // Email validation
+      if (touched.email) {
+        if (!validateEmail(emailInput.value)) {
+          emailInput.classList.add('input-invalid');
+          emailInput.classList.remove('input-valid');
+          emailError.textContent = 'Please enter a valid email address.';
+          emailError.style.display = 'block';
+          valid = false;
+        } else {
+          emailInput.classList.remove('input-invalid');
+          emailInput.classList.add('input-valid');
+          emailError.textContent = '';
+          emailError.style.display = 'none';
+        }
+      } else {
+        emailInput.classList.remove('input-invalid');
+        emailInput.classList.remove('input-valid');
+        emailError.textContent = '';
+        emailError.style.display = 'none';
+      }
+      // Password validation
+      const pwd = passwordInput.value;
+      let pwdStrength = getPasswordStrength(pwd);
+      if (touched.password) {
+        if (!pwd) {
+          passwordInput.classList.add('input-invalid');
+          passwordInput.classList.remove('input-valid');
+          passwordError.textContent = 'Password cannot be empty.';
+          passwordError.style.display = 'block';
+          passwordStrength.style.display = 'none';
+          valid = false;
+        } else if (pwd.length < 6) {
+          passwordInput.classList.add('input-invalid');
+          passwordInput.classList.remove('input-valid');
+          passwordError.textContent = 'Password must be at least 6 characters.';
+          passwordError.style.display = 'block';
+          passwordStrength.style.display = 'block';
+          passwordStrength.textContent = 'Strength: Weak';
+          passwordStrength.style.color = '#dc3545';
+          valid = false;
+        } else {
+          passwordInput.classList.remove('input-invalid');
+          passwordInput.classList.add('input-valid');
+          passwordError.textContent = '';
+          passwordError.style.display = 'none';
+          passwordStrength.style.display = 'block';
+          if (pwdStrength === 'weak') {
+            passwordStrength.textContent = 'Strength: Weak';
+            passwordStrength.style.color = '#dc3545';
+          } else if (pwdStrength === 'medium') {
+            passwordStrength.textContent = 'Strength: Medium';
+            passwordStrength.style.color = '#ffc107';
+          } else {
+            passwordStrength.textContent = 'Strength: Strong';
+            passwordStrength.style.color = '#28a745';
+          }
+        }
+      } else {
+        passwordInput.classList.remove('input-invalid');
+        passwordInput.classList.remove('input-valid');
+        passwordError.textContent = '';
+        passwordError.style.display = 'none';
+        passwordStrength.style.display = 'none';
+      }
+      // Confirm password validation
+      if (touched.verifyPassword) {
+        if (verifyPasswordInput.value !== pwd || !verifyPasswordInput.value) {
+          verifyPasswordInput.classList.add('input-invalid');
+          verifyPasswordInput.classList.remove('input-valid');
+          verifyPasswordError.textContent = 'Passwords do not match.';
+          verifyPasswordError.style.display = 'block';
+          valid = false;
+        } else {
+          verifyPasswordInput.classList.remove('input-invalid');
+          verifyPasswordInput.classList.add('input-valid');
+          verifyPasswordError.textContent = '';
+          verifyPasswordError.style.display = 'none';
+        }
+      } else {
+        verifyPasswordInput.classList.remove('input-invalid');
+        verifyPasswordInput.classList.remove('input-valid');
+        verifyPasswordError.textContent = '';
+        verifyPasswordError.style.display = 'none';
+      }
+      signupBtn.disabled = !valid;
+      return valid;
+    }
+
+    emailInput.addEventListener('input', () => { touched.email = true; validateSignupForm(); });
+    passwordInput.addEventListener('input', () => { touched.password = true; validateSignupForm(); });
+    verifyPasswordInput.addEventListener('input', () => { touched.verifyPassword = true; validateSignupForm(); });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      validateSignupForm();
+    });
+
     document.getElementById('signupForm').addEventListener('submit', async function (e) {
+      if (!validateSignupForm()) {
+        e.preventDefault();
+        return;
+      }
       e.preventDefault();
 
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       const verifyPassword = document.getElementById('verifyPassword').value;
-
-      if (!validateEmail(email)) {
-        showPopup('Please enter a valid email address.', 'error');
-        return;
-      }
 
       const response = await fetch('/signup', {
         method: 'POST',

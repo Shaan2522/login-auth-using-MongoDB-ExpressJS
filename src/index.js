@@ -1,7 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const passport = require('passport');
+const setupPassportStrategies = require('./passportConfig');
+const User = require('../models/user');
 const authRoutes = require('../routes/authRoutes');
 
 const app = express();
@@ -21,6 +25,24 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
+
+// Passport setup
+app.use(passport.initialize());
+app.use(passport.session());
+setupPassportStrategies(passport);
+
+passport.serializeUser((user, done) => {
+  done(null, user._id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+});
 
 // MongoDB connection
 mongoose.connect('mongodb://localhost:27017/admin')
